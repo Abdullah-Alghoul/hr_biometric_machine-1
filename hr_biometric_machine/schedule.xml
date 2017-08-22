@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<openerp>
+<odoo>
     <data noupdate="1">
         <record id="ir_cron_scheduler_attendence_action" model="ir.cron">
             <field name="name">Download Attendence</field>
@@ -12,4 +12,4 @@
             <field eval="'schedule_download'" name="function"/>
         </record>
    </data>
-</openerp>
+</odoo>
