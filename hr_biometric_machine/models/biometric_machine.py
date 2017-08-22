@@ -86,7 +86,11 @@ class biometric_machine(models.Model):
     ref_name = fields.Char("Location")
     port = fields.Integer("Port Number")
     address_id = fields.Many2one('res.partner', string='Partner')
-    company_id = fields.Many2one("res.company", string='Company Name')
+    # Multi-company
+    company_id = fields.Many2one(
+        'res.company',
+        'Company',
+        default=lambda self: self.env.user.company_id.id)
 
     # function to download attendance
     @api.multi
