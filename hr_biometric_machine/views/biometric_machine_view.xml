@@ -22,7 +22,7 @@
                 <group col="4"  colspan="4"> 
                     <field name="port" required="1"/>
                     <field name="ref_name" required="1"/>
-                        <field name="address_id"/>
+                    <field name="address_id"/>
                     <field name="company_id" groups="base.group_multi_company"/>
                 </group>
             </sheet>
