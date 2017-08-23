@@ -19,7 +19,7 @@ Downloads the logs of each employee from the fingerprint machine with their deta
     'version': '0.1',
 
     'depends': ['base_setup', 'hr', 'hr_attendance',],
-
+    'images': ['images/main_screenshot.png'],
 
     'data': [
         # 'security/ir.model.access.csv',
