@@ -20,7 +20,6 @@
       </field>
     </record>
 
-
     <record id="open_configure_schedule_wizard" model="ir.actions.act_window">
         <field name="name">Configuration</field>
         <field name="type">ir.actions.act_window</field>

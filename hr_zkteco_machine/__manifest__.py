@@ -27,12 +27,8 @@ Downloads the logs of each employee from the fingerprint machine with their deta
         'report/daily_attendance_view.xml',
         'schedule.xml',
         'wizard/schedule_wizard.xml',
-        'views/templates.xml',
     ],
-    # only loaded in demonstration mode
-    #'demo': [
-    #    'demo/demo.xml',
-   #  ],
+
     'installable': True,
     'application': True,
     'auto_install': False,
