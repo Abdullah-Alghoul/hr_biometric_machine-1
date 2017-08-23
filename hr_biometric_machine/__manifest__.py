@@ -13,7 +13,7 @@ This application enables you to integrate the fingerprint machine at you organiz
 Downloads the logs of each employee from the fingerprint machine with their details.
     """,
 
-    'author': "Pravitha V",
+    'author': "OnGood, Pravitha V",
     'website': "https://www.odoo.com/",
     'category': 'Human Resources Custom',
     'version': '0.1',
