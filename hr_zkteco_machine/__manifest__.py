@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "Biometric Machine ",
+    'name': "Biometric Machine[Zkteco] ",
 
     'summary': """
        Employee Attendance, Fingerprint Machine Integration""",
