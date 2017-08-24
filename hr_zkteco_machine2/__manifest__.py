@@ -21,7 +21,7 @@ Downloads the logs of each employee from the fingerprint machine with their deta
     'depends': ['base_setup', 'hr', 'hr_attendance',],
     'images': ['static/description/images/main_screenshot.png'],
     'external_dependencies': {
-        'python': ['zklib'],
+        # 'python': ['zklib'],
     },
 
     'data': [
