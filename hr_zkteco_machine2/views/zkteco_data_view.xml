@@ -53,7 +53,7 @@
 
     <!-- Top menu item -->
     <menuitem
-        name="zkteco"      
+        name="Attendance machine"      
         id="menu_zkteco_root"
         parent="hr.menu_hr_root"
         groups="hr.group_hr_manager"     
