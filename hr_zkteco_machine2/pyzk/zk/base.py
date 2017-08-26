@@ -439,7 +439,11 @@ class ZK(object):
                         uid = u1 + (u2 * 256)
                         privilege = int(privilege.encode("hex"), 16)
                         password = unicode(password.strip('\x00|\x01\x10x'), errors='ignore')
+                        
+                        #Correct: ValueError( A string literal cannot contain NUL (0x00) characters.)
+                        name = name.split('\x00', 1)[0]
                         name = unicode(name.strip('\x00|\x01\x10x'), errors='ignore')
+
                         group_id = unicode(group_id.strip('\x00|\x01\x10x'), errors='ignore')
                         user_id = unicode(user_id.strip('\x00|\x01\x10x'), errors='ignore')
 

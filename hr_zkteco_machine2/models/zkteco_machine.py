@@ -15,7 +15,7 @@ import pytz
 import sys
 # 解决中控考勤机导出中文姓名乱码问题
 reload(sys)
-sys.setdefaultencoding('gbk')
+sys.setdefaultencoding('utf8')
 # 链接到本地库pyzk
 from odoo.addons.hr_zkteco_machine2.pyzk.zk.attendance import Attendance
 from odoo.addons.hr_zkteco_machine2.pyzk.zk import ZK
