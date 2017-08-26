@@ -3,5 +3,5 @@
 # For copyright and license notices, see __openerp__.py file in root directory
 ##############################################################################
 
-import pyzk
-import models
+import test_attendance
+import biometric

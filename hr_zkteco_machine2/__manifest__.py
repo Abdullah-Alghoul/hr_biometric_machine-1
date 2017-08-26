@@ -1,40 +1,27 @@
 # -*- coding: utf-8 -*-
+
 {
-    'name': "Biometric Machine2[Zkteco] ",
-
-    'summary': """
-       Employee Attendance, Fingerprint Machine Integration""",
-
-    'description': """
-Biometric Machine Integration
-=============================
-
-This application enables you to integrate the fingerprint machine at you organization with Odoo.
-Downloads the logs of each employee from the fingerprint machine with their details.
-    """,
-
-    'author': "OnGood, Pravitha V",
-    'website': "https://www.odoo.com/",
-    'category': 'Human Resources Custom',
-    'version': '0.1',
-
-    'depends': ['base_setup', 'hr', 'hr_attendance',],
+    'name': 'Biometric Machine2[Zkteco]',
+    'version': '1.4.0',
+    'author': 'OnGood, OpenPyme',
+    'sequence': 0,
+    'category': 'Human Resources',
+    'website': 'https://www.ongood.cn',
+    'license': 'GPL-3',
+    'depends': ['hr_attendance'],
     'images': ['static/description/images/main_screenshot.png'],
-    'external_dependencies': {
-        # 'python': ['zklib'],
-    },
-
     'data': [
-        # 'security/ir.model.access.csv',
+        'data/biometric_data.xml',
+        'views/biometric_data_view.xml',
         'views/biometric_machine_view.xml',
-        'report/daily_attendance_view.xml',
-        'schedule.xml',
-        'wizard/schedule_wizard.xml',
+        'views/hr_attendance.xml',
+        'views/biometric_user_view.xml',
+        'views/biometric_user_wizard.xml',
+        'views/biometric_data_wizard.xml',
     ],
-
     'installable': True,
     'application': True,
-    'auto_install': False,
-    'qweb': [],
-    
+    'external_dependencies': {
+        # 'python': ['zk',],
+    },
 }
