@@ -10,8 +10,8 @@ from odoo.exceptions import UserError, AccessError, ValidationError
 from odoo.modules.module import get_module_resource
 from datetime import datetime, timedelta
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT
-from zklib import zklib
-from zklib import zkconst
+from odoo.addons.hr_zkteco_machine.zklib import zklib
+from odoo.addons.hr_zkteco_machine.zklib import zkconst
 
 
 # inherit hr_employee module

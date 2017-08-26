@@ -6,7 +6,7 @@
 from datetime import datetime, timedelta
 from itertools import groupby
 from odoo.addons.hr_zkteco_machine2.modes.zkteco_machine import OdooAttendance as zk_openerp  
-from zk.user import User
+from odoo.addons.hr_zkteco_machine2.pyzk.zk.user import User
 import pytz
 
 
