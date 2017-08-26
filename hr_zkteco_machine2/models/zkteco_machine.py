@@ -3,6 +3,7 @@
 # For copyright and license notices, see __openerp__.py file in root directory
 ##############################################################################
 
+from itertools import groupby
 from mock import patch
 from odoo import api, fields, models
 from odoo.exceptions import UserError, AccessError, ValidationError
@@ -21,7 +22,7 @@ from odoo.addons.hr_zkteco_machine2.pyzk.zk import ZK
 
 
 class ZktecoMachine(models.Model):
-    _name = 'biometric.machine'
+    _name = 'zkteco.machine'
 
     @property
     def min_time(self):
@@ -86,7 +87,7 @@ class ZktecoMachine(models.Model):
     def get_users(self):
         """
         Function use to get all the registered users
-        at the biometric device
+        at the zkteco device
         """
         with ConnectToDevice(self.ip_address, self.port) as conn:
             users = conn.get_users()
@@ -96,7 +97,7 @@ class ZktecoMachine(models.Model):
     def clean_attendance(self):
         """
         Function use to clean all attendances
-        at the biometric device
+        at the zkteco device
         """
         with ConnectToDevice(self.ip_address, self.port) as conn:
             conn.clear_attendance()
@@ -107,17 +108,17 @@ class ZktecoMachine(models.Model):
         function uses to assure that all users are alredy
         created in odoo
         """
-        biometric_user_obj = self.env['biometric.user']
+        zkteco_user_obj = self.env['zkteco.user']
         users = self.get_users()
-        odoo_users = biometric_user_obj.search([
-            ('biometric_device', '=', self.id), ], )
-        odoo_users_id = [user.biometric_id for user in odoo_users]
+        odoo_users = zkteco_user_obj.search([
+            ('zkteco_device', '=', self.id), ], )
+        odoo_users_id = [user.zkteco_id for user in odoo_users]
         for user in users:
             if int(user.user_id) not in odoo_users_id:
-                biometric_user_obj.create({
-                     'biometric_id': int(user.user_id),
+                zkteco_user_obj.create({
+                     'zkteco_id': int(user.user_id),
                      'name': user.name,
-                     'biometric_device': self.id, }
+                     'zkteco_device': self.id, }
                 )
                 
 
@@ -160,7 +161,7 @@ class ConnectToDevice(object):
 
     def __enter__(self):
         """
-        return biometric connection
+        return zkteco connection
         """
         return self.conn
 
@@ -174,7 +175,7 @@ class ConnectToDevice(object):
         
 
 class ZktecoData(models.Model):
-    _name = 'biometric.data'
+    _name = 'zkteco.data'
 
     # Order records by date to assure will be crated
     # first the oldest registers
@@ -182,28 +183,28 @@ class ZktecoData(models.Model):
 
     @api.multi
     def _compute_get_employee_id(self):
-        if self.biometric_user_id.employee_id:
-            self.employee_id = self.biometric_user_id.employee_id
+        if self.zkteco_user_id.employee_id:
+            self.employee_id = self.zkteco_user_id.employee_id
 
     @api.multi
     def _compute_get_name(self):
-        if self.biometric_user_id:
-            self.name = self.biometric_user_id.name
+        if self.zkteco_user_id:
+            self.name = self.zkteco_user_id.name
 
     datetime = fields.Datetime('Date')
-    biometric_user_id = fields.Many2one(
-        'biometric.user', 'Related biometric user',)
+    zkteco_user_id = fields.Many2one(
+        'zkteco.user', 'Related zkteco user',)
     employee_id = fields.Many2one(
         'hr.employee', 'Related employee', compute=_compute_get_employee_id,)
     name = fields.Char(
-        'Employee name in biometric device',
+        'Employee name in zkteco device',
         compute=_compute_get_name,)
     action_perform = fields.Char('Action perform')
 
     @api.model
     def create_hr_attendace(
             self, employee_id, date, action_perform,
-            biometric_id, state='right',):
+            zkteco_id, state='right',):
         """
         Register have to be always: check_in, check_out, check_in and so on
         In hr_attedance moules there is a a contrain
@@ -215,12 +216,12 @@ class ZktecoData(models.Model):
         This function assures that regardless contrain continue being true
         """
         hr_attendance_obj = self.env['hr.attendance']
-        biometric_machine_obj = self.env['biometric.machine']
-        biometric_machine = biometric_machine_obj.browse(biometric_id)
+        zkteco_machine_obj = self.env['zkteco.machine']
+        zkteco_machine = zkteco_machine_obj.browse(zkteco_id)
 
         def convert_date_to_utc(date):
             local = pytz.timezone(
-                biometric_machine.timezone,)
+                zkteco_machine.timezone,)
             date = local.localize(date, is_dst=None)
             date = date.astimezone(pytz.utc)
             date.strftime('%Y-%m-%d: %H:%M:%S')
@@ -228,14 +229,14 @@ class ZktecoData(models.Model):
 
         def convert_from_local_to_utc(date):
             local = pytz.timezone(
-                biometric_machine.timezone,)
+                zkteco_machine.timezone,)
             date = date.replace(tzinfo=pytz.utc)
             date = date.astimezone(local)
             date.strftime('%Y-%m-%d: %H:%M:%S')
             return date.replace(tzinfo=None)
 
         # Get the max time of working set up for the device
-        max_time = biometric_machine.max_time
+        max_time = zkteco_machine.max_time
         # Get a delta time of 1 minute
         delta_1_minute = datetime.timedelta(minutes=1)
         # Get previous attendace
@@ -257,19 +258,19 @@ class ZktecoData(models.Model):
                     new_time = employee_date + max_time
                     self.create_hr_attendace(
                         employee_id, new_time, 'check_out',
-                        biometric_id, state='fix',)
+                        zkteco_id, state='fix',)
                 else:
                     new_time = date - delta_1_minute
                     self.create_hr_attendace(
                         employee_id, new_time, 'check_out',
-                        biometric_id, state='fix',)
+                        zkteco_id, state='fix',)
         else:
             if (not prev_att or prev_att.action == action_perform or
                     abs(employee_date - date) > max_time):
                 new_time = date - delta_1_minute
                 self.create_hr_attendace(
                     employee_id, new_time, 'check_in',
-                    biometric_id, state='fix',)
+                    zkteco_id, state='fix',)
         # Convert date using correct timezone
         date = convert_date_to_utc(date)
         self._create_hr_attendace(employee_id, date, action_perform, state)
@@ -287,127 +288,127 @@ class ZktecoData(models.Model):
 
     @classmethod
     def convert_to_hr_attendance_classmethod(
-            cls, biometric_data, biometric_data_obj,):
-        for datum in biometric_data:
+            cls, zkteco_data, zkteco_data_obj,):
+        for datum in zkteco_data:
             if not datum.employee_id:
                 continue
             date = datetime.datetime.strptime(
                 datum.datetime, '%Y-%m-%d %H:%M:%S',)
-            biometric_data_obj.create_hr_attendace(
+            zkteco_data_obj.create_hr_attendace(
                 datum.employee_id.id, date,
                 datum.action_perform,
-                datum.biometric_user_id.biometric_device.id,
+                datum.zkteco_user_id.zkteco_device.id,
             )
-            datum.unlink()
+            #datum.unlink()
 
     @classmethod
     def import_data_classmethod(
-            cls, biometric_machine, biometric_data_obj, biometric_user_obj,):
-        attendances = biometric_machine.getattendance()
+            cls, zkteco_machine, zkteco_data_obj, zkteco_user_obj,):
+        attendances = zkteco_machine.getattendance()
         for user_attendances in attendances:
             # Sorted elements using timestamp
             user_attendances.sort(key=lambda x: x.timestamp)
-            user = biometric_user_obj.search([
-                    ['biometric_id', '=', int(
+            user = zkteco_user_obj.search([
+                    ['zkteco_id', '=', int(
                         user_attendances[0].user_id), ], ], )
             for attendance in user_attendances:
                 if not attendance.action_perform:
                     continue
                 elif not user.employee_id:
-                    biometric_data_obj.create(
-                        {'biometric_user_id': user.id,
+                    zkteco_data_obj.create(
+                        {'zkteco_user_id': user.id,
                          'datetime': attendance.timestamp,
                          'action_perform': attendance.action_perform, }, )
                 else:
-                    biometric_data_obj.create_hr_attendace(
+                    zkteco_data_obj.create_hr_attendace(
                         user.employee_id.id, attendance.timestamp,
                         attendance.action_perform,
-                        user.biometric_device.id,)
-        biometric_machine.clean_attendance()
+                        user.zkteco_device.id,)
+        #zkteco_machine.clean_attendance()
 
     @api.model
     def convert_to_hr_attendance(self):
-        biometric_data = self.search([])
+        zkteco_data = self.search([])
         self.convert_to_hr_attendance_classmethod(
-            biometric_data, self,)
+            zkteco_data, self,)
 
     @api.model
     def import_data(self):
-        biometric_machine_obj = self.env['biometric.machine']
-        biometric_user_obj = self.env['biometric.user']
+        zkteco_machine_obj = self.env['zkteco.machine']
+        zkteco_user_obj = self.env['zkteco.user']
         # First of all convert the oldest registers
         # into hr.attendance registers
         self.convert_to_hr_attendance()
-        biometric_machines = biometric_machine_obj.search([])
-        for biometric_machine in biometric_machines:
+        zkteco_machines = zkteco_machine_obj.search([])
+        for zkteco_machine in zkteco_machines:
             self.import_data_classmethod(
-                biometric_machine, self, biometric_user_obj,)
+                zkteco_machine, self, zkteco_user_obj,)
                 
-class BiometricDataWizard(models.TransientModel):
-    _name = 'biometric.data.wizard'
+class ZktecoDataWizard(models.TransientModel):
+    _name = 'zkteco.data.wizard'
 
-    biometric_device = fields.Many2one(
-        'biometric.machine', 'Biometric device',
+    zkteco_device = fields.Many2one(
+        'zkteco.machine', 'zkteco device',
     )
 
     def import_attendance(self):
         """
         wrapper function
         """
-        for biometric_attendance in self:
-            biometric_attendance.crate_attendance_in_odoo()
+        for zkteco_attendance in self:
+            zkteco_attendance.crate_attendance_in_odoo()
 
     @api.model
     def crate_attendance_in_odoo(self):
         """
-        Call import function in biometric.data model
+        Call import function in zkteco.data model
         """
-        biometric_data_obj = self.env['biometric.data']
-        biometric_user_obj = self.env['biometric.user']
-        biometric_data_bio = biometric_data_obj.search([])
-        BiometricData.convert_to_hr_attendance_classmethod(biometric_data_bio, biometric_data_obj,)
-        biometric_machine = self.biometric_device
-        BiometricData.import_data_classmethod(biometric_machine, biometric_data_obj, biometric_user_obj,)
+        zkteco_data_obj = self.env['zkteco.data']
+        zkteco_user_obj = self.env['zkteco.user']
+        zkteco_data_bio = zkteco_data_obj.search([])
+        ZktecoData.convert_to_hr_attendance_classmethod(zkteco_data_bio, zkteco_data_obj,)
+        zkteco_machine = self.zkteco_device
+        ZktecoData.import_data_classmethod(zkteco_machine, zkteco_data_obj, zkteco_user_obj,)
             
-class BiometricUser(models.Model):
-    _name = 'biometric.user'
+class ZktecoUser(models.Model):
+    _name = 'zkteco.user'
 
-    biometric_id = fields.Integer('Id in biometric device')
-    name = fields.Char('Name in biometric device')
+    zkteco_id = fields.Integer('Id in zkteco device')
+    name = fields.Char('Name in zkteco device')
     employee_id = fields.Many2one('hr.employee', 'Related employee')
-    biometric_device = fields.Many2one(
-        'biometric.machine', 'Biometric device',
+    zkteco_device = fields.Many2one(
+        'zkteco.machine', 'zkteco device',
     )
 
     _sql_constraints = [
         ('employee_id_uniq', 'unique (employee_id)',
-         'It is not possible relate an employee with a biometric user '
+         'It is not possible relate an employee with a zkteco user '
          'more than once!'),
     ]
 
     _sql_constraints = [
-        ('biometric_id_uniq', 'unique (biometric_id)',
+        ('zkteco_id_uniq', 'unique (zkteco_id)',
          'It is not possible to crate more than one '
-         'with the same biometric_id'),
+         'with the same zkteco_id'),
     ]
 
-class BiometricUser(models.TransientModel):
-    _name = 'biometric.user.wizard'
+class ZktecoUserWizard(models.TransientModel):
+    _name = 'zkteco.user.wizard'
 
-    biometric_device = fields.Many2one(
-        'biometric.machine', 'Biometric device',
+    zkteco_device = fields.Many2one(
+        'zkteco.machine', 'zkteco device',
     )
 
     def import_users(self):
         """
         wrapper function
         """
-        for biometric_import_user in self:
-            biometric_import_user.create_users_in_odoo()
+        for zkteco_import_user in self:
+            zkteco_import_user.create_users_in_odoo()
   
     @api.model
     def create_users_in_odoo(self):
-        self.biometric_device.create_user()
+        self.zkteco_device.create_user()
         
 class HrAttendance(models.Model):
     _inherit = 'hr.attendance'

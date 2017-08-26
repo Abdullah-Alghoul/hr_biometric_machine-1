@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_zkteco_data_tree" model="ir.ui.view">
+        <field name="name">view.zkteco.data.tree</field>
+        <field name="model">zkteco.data</field>
+        <field name="arch" type="xml">
+            <tree string="zkteco data" create="false">
+                <field name="employee_id" string="Employee" readonly="True"/>
+                <field name="zkteco_user_id" readonly="True"/>
+                <field name="datetime" readonly="True"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_zkteco_data_form" model="ir.ui.view">
+        <field name="name">view.zkteco.data.form</field>
+        <field name="model">zkteco.data</field>
+        <field name="arch" type="xml">
+            <form string="zkteco data" create="false">
+                <group>
+                    <field name="employee_id" string="Employee" readonly="True"/>
+                    <field name="zkteco_user_id" readonly="True"/>
+                    <field name="datetime" readonly="True"/>
+                </group>
+            </form>
+        </field>
+    </record>
+    
+    <record id="view_zkteco_data_search" model="ir.ui.view">
+        <field name="name">view.zkteco.data.search</field>
+        <field name="model">zkteco.data</field>
+        <field name="arch" type="xml">
+            <search string="zkteco data">
+                <field name="employee_id" string="Employee"/>
+                <field name="datetime"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_zkteco_data" model="ir.actions.act_window">
+        <field name="name">zkteco data</field>
+        <field name="res_model">zkteco.data</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help">
+            This view will display the attendance import
+            from the zkteco device, but only will be appeared the attendance
+            which failed due to the zkteco user does not have a
+            related employee configured
+            
+        </field>
+    </record>
+
+    <!-- Top menu item -->
+    <menuitem
+        name="zkteco"      
+        id="menu_zkteco_root"
+        parent="hr.menu_hr_root"
+        groups="hr.group_hr_manager"     
+        sequence="50"/>
+    
+    <menuitem
+        name="zkteco attendance" 
+        id="menu_zkteco_data"
+        parent="menu_zkteco_root"     
+        sequence="50"/>
+    
+    <menuitem
+        name="Attendance" 
+        action="action_zkteco_data"
+        id="menu_zkteco_data_data"
+        parent="menu_zkteco_data"     
+        sequence="50"/>
+</odoo>

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record id="view_biometric_machine_tree" model="ir.ui.view">
-        <field name="name">view.biometric.machine.tree</field>
-        <field name="model">biometric.machine</field>
+    <record id="view_zkteco_machine_tree" model="ir.ui.view">
+        <field name="name">view.zkteco.machine.tree</field>
+        <field name="model">zkteco.machine</field>
         <field name="arch" type="xml">
-            <tree string="Biometric device">
+            <tree string="zkteco device">
                 <field name="name"/>
                 <field name="ip_address"/>
                 <field name="port"/>                 
@@ -14,11 +14,11 @@
         </field>
     </record>
 
-    <record id="view_biometric_machine_form" model="ir.ui.view">
-        <field name="name">view.biometric.machine.form</field>
-        <field name="model">biometric.machine</field>
+    <record id="view_zkteco_machine_form" model="ir.ui.view">
+        <field name="name">view.zkteco.machine.form</field>
+        <field name="model">zkteco.machine</field>
         <field name="arch" type="xml">
-            <form string="Biometric device">
+            <form string="zkteco device">
                 <group>
                     <field name="name"/>
                     <field name="ip_address" placeholder="192.168.0.1"/>
@@ -46,11 +46,11 @@
         </field>
     </record>
     
-    <record id="view_biometric_machine_search" model="ir.ui.view">
-        <field name="name">view.biometric.machine.search</field>
-        <field name="model">biometric.machine</field>
+    <record id="view_zkteco_machine_search" model="ir.ui.view">
+        <field name="name">view.zkteco.machine.search</field>
+        <field name="model">zkteco.machine</field>
         <field name="arch" type="xml">
-            <search string="Biometric device">
+            <search string="zkteco device">
                 <field name="name"/>
                 <field name="ip_address"/>
                 <field name="port"/>                 
@@ -59,17 +59,17 @@
         </field>
     </record>
 
-    <record id="action_biometric_machine" model="ir.actions.act_window">
-        <field name="name">Biometric machine</field>
-        <field name="res_model">biometric.machine</field>
+    <record id="action_zkteco_machine" model="ir.actions.act_window">
+        <field name="name">zkteco machine</field>
+        <field name="res_model">zkteco.machine</field>
         <field name="view_type">form</field>
         <field name="view_mode">tree,form</field>
     </record>
 
     <menuitem
-        name="Biometric device config" 
-        action="action_biometric_machine"
-        id="menu_biometric_machine"
-        parent="menu_biometric_root"     
+        name="zkteco device config" 
+        action="action_zkteco_machine"
+        id="menu_zkteco_machine"
+        parent="menu_zkteco_root"     
         sequence="100"/>  
 </odoo>

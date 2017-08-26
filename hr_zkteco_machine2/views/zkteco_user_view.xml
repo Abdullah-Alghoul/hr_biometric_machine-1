@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_zkteco_user_tree" model="ir.ui.view">
+        <field name="name">view.zkteco.user.tree</field>
+        <field name="model">zkteco.user</field>
+        <field name="arch" type="xml">
+            <tree string="zkteco user"
+                colors="red:(employee_id == False)" create="false">
+                <field name="zkteco_id"/>
+                <field name="name"/>
+                <field name="zkteco_device"/>                 
+                <field name="employee_id"/>                 
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_zkteco_user_form" model="ir.ui.view">
+        <field name="name">view.zkteco.user.form</field>
+        <field name="model">zkteco.user</field>
+        <field name="arch" type="xml">
+            <form string="zkteco user" create="false">
+                <group>
+                    <field name="zkteco_id" readonly="True"/>
+                <field name="name" readonly="True"/>
+                <field name="zkteco_device" readonly="True"/>                 
+                <field name="employee_id" required="True"/> 
+                </group>
+            </form>
+        </field>
+    </record>
+    
+    <record id="view_zkteco_user_search" model="ir.ui.view">
+        <field name="name">view.zkteco.user.search</field>
+        <field name="model">zkteco.user</field>
+        <field name="arch" type="xml">
+            <search string="zkteco user">
+                <field name="zkteco_id"/>
+                <field name="name"/>
+                <field name="employee_id"/> 
+            </search>
+        </field>
+    </record>
+
+    <record id="action_zkteco_user" model="ir.actions.act_window">
+        <field name="name">zkteco user</field>
+        <field name="res_model">zkteco.user</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help">In this view will be shown the employees import from the zkteco device, use "Import users from device" menu to bring users from device</field>
+    </record>
+    
+    <menuitem
+        name="zkteco user" 
+        id="menu_zkteco_user"
+        parent="menu_zkteco_root"     
+        sequence="50"/>
+    
+    <menuitem
+        name="User" 
+        action="action_zkteco_user"
+        id="menu_zkteco_user_user"
+        parent="menu_zkteco_user"     
+        sequence="50"/>
+</odoo>

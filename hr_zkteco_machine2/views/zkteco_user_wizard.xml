@@ -2,13 +2,13 @@
 <odoo>
     <record id="import_users_from_device" model="ir.ui.view">
       <field name="name">Import users from device</field>
-      <field name="model">biometric.user.wizard</field>
+      <field name="model">zkteco.user.wizard</field>
       <field name="arch" type="xml">
         <form string="Import users from device">
           <label nolabel="1" colspan="4"
-          string="This wizard will help you for importing users from the selected biometric device"/>
+          string="This wizard will help you for importing users from the selected zkteco device"/>
           <group>
-            <field name="biometric_device" required="True"/>
+            <field name="zkteco_device" required="True"/>
           </group>
           <footer>
             <button
@@ -24,7 +24,7 @@
     <record id="action_import_users_from_device" model="ir.actions.act_window">
       <field name="name">Import users from device</field>
       <field name="type">ir.actions.act_window</field>
-      <field name="res_model">biometric.user.wizard</field>
+      <field name="res_model">zkteco.user.wizard</field>
       <field name="view_type">form</field>
       <field name="view_mode">form</field>
       <field name="target">new</field>
@@ -35,7 +35,7 @@
         action="action_import_users_from_device"
         id="menu_import_users_from_device"
         sequence="1"
-        parent="menu_biometric_user"
+        parent="menu_zkteco_user"
         name="Import users from device"/>
 </odoo>
 
