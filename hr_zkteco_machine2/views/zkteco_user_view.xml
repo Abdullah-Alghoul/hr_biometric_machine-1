@@ -50,7 +50,7 @@
     </record>
     
     <menuitem
-        name="zkteco user" 
+        name="Zkteco user" 
         id="menu_zkteco_user"
         parent="menu_zkteco_root"     
         sequence="50"/>

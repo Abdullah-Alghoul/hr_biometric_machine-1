@@ -60,7 +60,7 @@
         sequence="50"/>
     
     <menuitem
-        name="zkteco attendance" 
+        name="Zkteco attendance" 
         id="menu_zkteco_data"
         parent="menu_zkteco_root"     
         sequence="50"/>
