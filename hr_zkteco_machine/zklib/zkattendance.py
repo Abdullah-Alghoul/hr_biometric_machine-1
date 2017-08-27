@@ -77,10 +77,16 @@ def zkgetattendance(self):
             
             attendancedata = attendancedata[14:]
             
-            while len(attendancedata) > 0:
+            # while len(attendancedata) > 0:
                 
-                uid, state, timestamp, space = unpack( '24s1s4s11s', attendancedata.ljust(40)[:40] )
-                pls = unpack('c',attendancedata[29:30])
+            #     uid, state, timestamp, space = unpack( '24s1s4s11s', attendancedata.ljust(40)[:40] )
+            #     pls = unpack('c',attendancedata[29:30])
+               
+               
+            while len(attendancedata) >= 38:
+                
+                uid, state, timestamp, space = unpack( '24sc4s11s', attendancedata.ljust(40)[:40] )
+               
                 #print "space", space
                 #uid, state, timestamp, space = unpack(attendancedata.ljust(40)[:40] )
 
@@ -92,7 +98,7 @@ def zkgetattendance(self):
                 # Clean up some messy characters from the user name
                 #uid = unicode(uid.strip('\x00|\x01\x10x'), errors='ignore')
                 uid = uid.split('\x00', 1)[0]
-                print "%s, %s, %s" % (uid, ord(pls), decode_time( int( reverseHex( timestamp.encode('hex') ), 16 ) ) )
+                # print "%s, %s, %s" % (uid, ord(pls), decode_time( int( reverseHex( timestamp.encode('hex') ), 16 ) ) )
                 
                 attendance.append( ( uid, int( state.encode('hex'), 16), decode_time( int( reverseHex( timestamp.encode('hex') ), 16 ) ) ) )
                 

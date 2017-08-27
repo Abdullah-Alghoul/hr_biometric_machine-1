@@ -87,13 +87,13 @@ def zkgetuser(self):
                 userid = unicode(userid.strip('\x00|\x01\x10x'), errors='ignore')
                 
                 name = name.split('\x00', 1)[0]
+                name = unicode(name.strip('\x00|\x01\x10x'), errors='ignore')
                 
-                if name.strip() == "":
-                    name = uid
+                # if name.strip() == "":
+                #     name = uid
                 
                 users[uid] = (userid, name, int( role.encode("hex"), 16 ), password)
                 
-                #print("%d, %s, %s, %s, %s" % (uid, userid, name, int( role.encode("hex"), 16 ), password))
                 userdata = userdata[72:]
                 
         return users

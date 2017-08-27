@@ -13,6 +13,10 @@ from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT
 from odoo.addons.hr_zkteco_machine.zklib import zklib
 from odoo.addons.hr_zkteco_machine.zklib import zkconst
 
+# 解决中控考勤机导出中文姓名乱码问题
+import sys
+reload(sys)
+sys.setdefaultencoding('utf8')
 
 # inherit hr_employee module
 class hr_employee(models.Model):
